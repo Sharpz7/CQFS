@@ -1,3 +1,5 @@
+import traceback
+
 import pandas as pd
 
 from recsys.Data_manager.IncrementalSparseMatrix import (
@@ -35,12 +37,11 @@ def _loadURM_preinitialized_item_id(
                 filepath_or_buffer=file_path,
                 sep=separator,
                 header=0 if header else None,
-                usecols=["user_id", "book_id", "rating", "timestamp"],
+                usecols=["User-ID", "ISBN", "Book-Rating"],
                 dtype={
-                    "user_id": str,
-                    "book_id": str,
-                    "rating": float,
-                    "timestamp": float,
+                    "User-ID": str,
+                    "ISBN": str,
+                    "Book-Rating": float,
                 },
             )
         else:
@@ -48,28 +49,29 @@ def _loadURM_preinitialized_item_id(
                 filepath_or_buffer=file_path,
                 sep=separator,
                 header=0 if header else None,
-                dtype={0: str, 1: str, 2: float, 3: float},
+                dtype={0: str, 1: str, 2: float},
             )
-            df_original.columns = ["user_id", "book_id", "rating", "timestamp"]
+            df_original.columns = ["User-ID", "ISBN", "Book-Rating"]
 
     except ValueError as e:
+        traceback.print_exc()
+        print("===========================\n\n")
         print(f"Error: {e}")
         print(f"Found columns: {df_original.columns.tolist()}")
-        raise e
+        exit(1)
 
     # Remove data with rating non valid
     df_original.drop(
-        df_original[df_original.rating == 0.0].index, inplace=True
+        df_original[df_original["Book-Rating"] == 0.0].index, inplace=True
     )
 
-    user_id_list = df_original["user_id"].values
-    item_id_list = df_original["book_id"].values
-    rating_list = df_original["rating"].values
-    timestamp_list = df_original["timestamp"].values
+    user_id_list = df_original["User-ID"].values
+    item_id_list = df_original["ISBN"].values
+    rating_list = df_original["Book-Rating"].values
 
     URM_all_builder.add_data_lists(user_id_list, item_id_list, rating_list)
     URM_timestamp_builder.add_data_lists(
-        user_id_list, item_id_list, timestamp_list
+        user_id_list, item_id_list, rating_list
     )
 
     return (
