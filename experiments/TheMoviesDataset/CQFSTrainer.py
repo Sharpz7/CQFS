@@ -1,12 +1,12 @@
+from dwave.system import LeapHybridSampler
+from neal import SimulatedAnnealingSampler
+
+from core.CQFSSampler import CQFSQBSolvSampler, CQFSSimulatedAnnealingSampler
 from data.DataLoader import TheMoviesDatasetLoader
 from experiments.train_CQFS import train_CQFS
-from recsys.Recommender_import_list import ItemKNNCFRecommender, PureSVDItemRecommender, \
-    RP3betaRecommender
-
-
-from dwave.system import LeapHybridSampler
-# from neal import SimulatedAnnealingSampler
-# from core.CQFSSampler import CQFSSimulatedAnnealingSampler, CQFSQBSolvSampler
+from recsys.Recommender_import_list import (ItemKNNCFRecommender,
+                                            PureSVDItemRecommender,
+                                            RP3betaRecommender)
 
 
 def main():
@@ -18,8 +18,8 @@ def main():
     betas = [1, 1e-1, 1e-2, 1e-3, 1e-4]
     combination_strengths = [1, 10, 100, 1000, 10000]
 
-    solver_class = LeapHybridSampler
-    # solver_class = SimulatedAnnealingSampler
+    # solver_class = LeapHybridSampler
+    solver_class = SimulatedAnnealingSampler
     # solver_class = CQFSSimulatedAnnealingSampler
     # solver_class = CQFSQBSolvSampler
 

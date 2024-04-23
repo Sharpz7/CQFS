@@ -68,3 +68,18 @@ scripts:
 
     # CFeCBF feature weighting baseline
     python baseline_CFW.py
+
+  baselines_books: |
+    export PYTHONPATH=$PYTHONPATH:$(pwd)
+    source .venv/bin/activate
+
+    cd experiments/TheBooksDataset
+
+    # ItemKNN content-based with all the features
+    python baseline_CBF.py
+
+    # ItemKNN content-based with features selected through TF-IDF
+    python baseline_TFIDF.py
+
+    # CFeCBF feature weighting baseline
+    python baseline_CFW.py
