@@ -2,9 +2,8 @@ import traceback
 
 import pandas as pd
 
-from recsys.Data_manager.IncrementalSparseMatrix import (
-    IncrementalSparseMatrix_FilterIDs,
-)
+from recsys.Data_manager.IncrementalSparseMatrix import \
+    IncrementalSparseMatrix_FilterIDs
 
 
 def _loadURM_preinitialized_item_id(

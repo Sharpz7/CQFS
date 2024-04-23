@@ -28,21 +28,16 @@ import numpy as np
 import pandas as pd
 
 from recsys.Base.Recommender_utils import reshapeSparse
-from recsys.Data_manager.Booklens._utils_booklens_parser import (
-    _loadURM_preinitialized_item_id,
-)
+from recsys.Data_manager.Booklens._utils_booklens_parser import \
+    _loadURM_preinitialized_item_id
 from recsys.Data_manager.DataPostprocessing_K_Cores import select_k_cores
 from recsys.Data_manager.DataReader import DataReader
 from recsys.Data_manager.DataReader_utils import (
-    invert_dictionary,
-    merge_ICM,
-    reconcile_mapper_with_removed_tokens,
-    remove_features,
-)
+    invert_dictionary, merge_ICM, reconcile_mapper_with_removed_tokens,
+    remove_features)
 from recsys.Data_manager.Dataset import Dataset
-from recsys.Data_manager.IncrementalSparseMatrix import (
-    IncrementalSparseMatrix_FilterIDs,
-)
+from recsys.Data_manager.IncrementalSparseMatrix import \
+    IncrementalSparseMatrix_FilterIDs
 
 
 class TheBooksDatasetReader(DataReader):
@@ -58,7 +53,7 @@ class TheBooksDatasetReader(DataReader):
         "item_index_to_title",
     ]
 
-    IS_IMPLICIT = True  # Assuming the dataset uses implicit ratings (e.g., 0 for not read, 1 for read)
+    IS_IMPLICIT = False  # Assuming the dataset uses implicit ratings (e.g., 0 for not read, 1 for read)
 
     def _get_dataset_name_root(self):
         return self.DATASET_SUBFOLDER
@@ -131,6 +126,7 @@ class TheBooksDatasetReader(DataReader):
             URM_all,
             self.item_original_ID_to_index,
             self.user_original_ID_to_index,
+            URM_timestamp,
         ) = _loadURM_preinitialized_item_id(
             ratings_path,
             separator=",",
@@ -146,6 +142,9 @@ class TheBooksDatasetReader(DataReader):
 
         URM_all, removedUsers, removedItems = select_k_cores(
             URM_all, k_value=1, reshape=True
+        )
+        URM_timestamp, _, _ = select_k_cores(
+            URM_timestamp, k_value=1, reshape=True
         )
 
         self.item_original_ID_to_index = reconcile_mapper_with_removed_tokens(
@@ -173,7 +172,7 @@ class TheBooksDatasetReader(DataReader):
 
         self.n_items = ICM_all.shape[0]
 
-        loaded_URM_dict = {"URM_all": URM_all}
+        loaded_URM_dict = {"URM_all": URM_all, "URM_timestamp": URM_timestamp}
 
         loaded_ICM_dict = {"ICM_all": ICM_all}
 

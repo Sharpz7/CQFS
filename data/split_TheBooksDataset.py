@@ -45,7 +45,7 @@ def main():
     ).all(), "WRONG SPLIT!"
 
     # Get the original ICM
-    ICM_name = "ICM_metadata"
+    ICM_name = "ICM_all"
     unfiltered_ICM_train = data_splitter.get_ICM_from_name(ICM_name)
 
     ##################################################
