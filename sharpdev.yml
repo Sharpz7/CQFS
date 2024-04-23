@@ -45,6 +45,15 @@ scripts:
     python CQFS.py
     python CQFSTrainer.py
 
+  run_books: |
+    export PYTHONPATH=$PYTHONPATH:$(pwd)
+    source .venv/bin/activate
+
+    cd experiments/TheBooksDataset
+    python CollaborativeFiltering.py
+    python CQFS.py
+    python CQFSTrainer.py
+
   baselines: |
     export PYTHONPATH=$PYTHONPATH:$(pwd)
     source .venv/bin/activate
