@@ -34,17 +34,17 @@ def main():
     # Samplers
 
     solves_classes = (
-        ("Simulated Annealing", SimulatedAnnealingSampler),
+        # ("Simulated Annealing", SimulatedAnnealingSampler),
         ("CQFS Simulated Annealing", CQFSSimulatedAnnealingSampler),
-        ("CQFS QBSolv", CQFSQBSolvSampler),
-        ("CQFS QBSolv Tabu", CQFSQBSolvTabuSampler),
+        # ("CQFS QBSolv", CQFSQBSolvSampler),
+        # ("CQFS QBSolv Tabu", CQFSQBSolvTabuSampler),
     )
 
     for name, solver_class in solves_classes:
         CF_recommender_classes = [
             ItemKNNCFRecommender,
-            PureSVDItemRecommender,
-            RP3betaRecommender,
+            # PureSVDItemRecommender,
+            # RP3betaRecommender,
         ]
 
         save_FPMs = False

@@ -26,14 +26,18 @@ def main():
     combination_strengths = [1, 10, 100, 1000, 10000]
 
     solves_classes = [
-        ("Simulated Annealing", SimulatedAnnealingSampler),
+        # ("Simulated Annealing", SimulatedAnnealingSampler),
         ("CQFS Simulated Annealing", CQFSSimulatedAnnealingSampler),
-        ("CQFS QBSolv", CQFSQBSolvSampler),
-        ("CQFS QBSolv Tabu", CQFSQBSolvTabuSampler),
+        # ("CQFS QBSolv", CQFSQBSolvSampler),
+        # ("CQFS QBSolv Tabu", CQFSQBSolvTabuSampler),
     ]
 
     for name, solver_class in solves_classes:
-        CF_recommender_classes = [ItemKNNCFRecommender, PureSVDItemRecommender, RP3betaRecommender]
+        CF_recommender_classes = [
+            ItemKNNCFRecommender,
+            # PureSVDItemRecommender,
+            # RP3betaRecommender
+        ]
 
         cpu_count_div = 6
         cpu_count_sub = 0

@@ -21,7 +21,7 @@ scripts:
     # Run `dwave setup` to setup
 
   split_movie: |
-    source .venv/bin/activate
+    . .venv/bin/activate
     mkdir ./recsys/Data_manager_offline_datasets/TheMoviesDataset
     export PYTHONPATH=$PYTHONPATH:$(pwd)
     mv ./the-movies-dataset.zip ./recsys/Data_manager_offline_datasets/TheMoviesDataset
@@ -29,7 +29,7 @@ scripts:
     python ./data/split_TheMoviesDataset.py
 
   split_books: |
-    source .venv/bin/activate
+    . .venv/bin/activate
     mkdir ./recsys/Data_manager_offline_datasets/TheBooksDataset
     export PYTHONPATH=$PYTHONPATH:$(pwd)
     mv ./the-books-dataset.zip ./recsys/Data_manager_offline_datasets/TheBooksDataset
@@ -38,7 +38,7 @@ scripts:
 
   run: |
     export PYTHONPATH=$PYTHONPATH:$(pwd)
-    source .venv/bin/activate
+    . .venv/bin/activate
 
     cd experiments/TheMoviesDataset
     python CollaborativeFiltering.py
@@ -47,7 +47,7 @@ scripts:
 
   run_books: |
     export PYTHONPATH=$PYTHONPATH:$(pwd)
-    source .venv/bin/activate
+    . .venv/bin/activate
 
     cd experiments/TheBooksDataset
     python CollaborativeFiltering.py
@@ -56,7 +56,7 @@ scripts:
 
   baselines: |
     export PYTHONPATH=$PYTHONPATH:$(pwd)
-    source .venv/bin/activate
+    . .venv/bin/activate
 
     cd experiments/TheMoviesDataset
 
@@ -71,9 +71,49 @@ scripts:
 
   baselines_books: |
     export PYTHONPATH=$PYTHONPATH:$(pwd)
-    source .venv/bin/activate
+    . .venv/bin/activate
 
     cd experiments/TheBooksDataset
+
+    # ItemKNN content-based with all the features
+    python baseline_CBF.py
+
+    # ItemKNN content-based with features selected through TF-IDF
+    python baseline_TFIDF.py
+
+    # CFeCBF feature weighting baseline
+    python baseline_CFW.py
+
+
+  create_v2: |
+    export PYTHONPATH=$PYTHONPATH:$(pwd)
+    . .venv/bin/activate
+
+    cd booksv2
+    python create.py
+
+  split_v2: |
+    . .venv/bin/activate
+    mkdir ./recsys/Data_manager_offline_datasets/TheBooksV2Dataset
+    export PYTHONPATH=$PYTHONPATH:$(pwd)
+    mv ./booksv2/the-booksv2-dataset.zip ./recsys/Data_manager_offline_datasets/TheBooksV2Dataset
+
+    python ./data/split_TheBooksV2Dataset.py
+
+  run_v2: |
+    export PYTHONPATH=$PYTHONPATH:$(pwd)
+    . .venv/bin/activate
+
+    cd experiments/TheBooksV2Dataset
+    python CollaborativeFiltering.py
+    python CQFS.py
+    python CQFSTrainer.py
+
+  baselines_v2: |
+    export PYTHONPATH=$PYTHONPATH:$(pwd)
+    . .venv/bin/activate
+
+    cd experiments/TheBooksV2Dataset
 
     # ItemKNN content-based with all the features
     python baseline_CBF.py
