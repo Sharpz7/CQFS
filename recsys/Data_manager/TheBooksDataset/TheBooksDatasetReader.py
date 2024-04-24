@@ -22,6 +22,7 @@ import ast
 import csv
 import os
 import shutil
+import token
 import zipfile
 
 import numpy as np
@@ -46,8 +47,8 @@ class TheBooksDatasetReader(DataReader):
         "https://www.kaggle.com/datasets/arashnic/book-recommendation-dataset"
     )
     DATASET_SUBFOLDER = "TheBooksDataset/"
-    AVAILABLE_URM = ["URM_all"]
-    AVAILABLE_ICM = ["ICM_all"]
+    AVAILABLE_URM = ["URM_all", "URM_timestamp"]
+    AVAILABLE_ICM = ["ICM_all", "ICM_books"]
     DATASET_SPECIFIC_MAPPER = [
         "item_original_ID_to_title",
         "item_index_to_title",
@@ -78,11 +79,17 @@ class TheBooksDatasetReader(DataReader):
                 compressed_zip_file_folder + zipFile_name
             )
 
+            # users_path = dataFile.extract(
+            #     "Users.csv",
+            #     path=decompressed_zip_file_folder + "decompressed/",
+            # )
             books_path = dataFile.extract(
                 "Books.csv",
                 path=decompressed_zip_file_folder + "decompressed/",
             )
-            ratings_path = dataFile.extract(
+
+
+            URM_PATH = dataFile.extract(
                 "Ratings.csv",
                 path=decompressed_zip_file_folder + "decompressed/",
             )
@@ -112,14 +119,22 @@ class TheBooksDatasetReader(DataReader):
         self.item_original_ID_to_title = {}
         self.item_index_to_title = {}
 
-        # NOTE: The original code loaded ICM from credits.csv and movies_metadata.csv, which are not present in the new dataset. We need to find a way to construct the ICM from the available data.
-
-        self._print("Loading ICM from Books.csv")
+        # self._print("Loading ICM_users from Books.csv")
+        # (
+        #     ICM_users,
+        #     tokenToFeatureMapper_ICM_users,
+        #     self.item_original_ID_to_index,
+        # ) = self._loadICM_books(users_path, header=True, if_new_item="add")
+        self._print("Loading ICM_books from Books.csv")
         (
-            ICM_all,
-            tokenToFeatureMapper_ICM_all,
+            ICM_books,
+            tokenToFeatureMapper_ICM_books,
             self.item_original_ID_to_index,
         ) = self._loadICM_books(books_path, header=True, if_new_item="add")
+
+        # n_items = ICM_books.shape[0]
+
+        # ICM_users = reshapeSparse(ICM_users, (n_items, ICM_books.shape[1]))
 
         self._print("Loading URM from Ratings.csv")
         (
@@ -128,7 +143,7 @@ class TheBooksDatasetReader(DataReader):
             self.user_original_ID_to_index,
             URM_timestamp,
         ) = _loadURM_preinitialized_item_id(
-            ratings_path,
+            URM_PATH,
             separator=",",
             header=True,
             if_new_user="add",
@@ -138,7 +153,7 @@ class TheBooksDatasetReader(DataReader):
 
         # Reconcile URM and ICM
         # Keep only items having ICM entries, remove all the others
-        self.n_items = ICM_all.shape[0]
+        self.n_items = ICM_books.shape[0]
 
         URM_all, removedUsers, removedItems = select_k_cores(
             URM_all, k_value=1, reshape=True
@@ -167,16 +182,31 @@ class TheBooksDatasetReader(DataReader):
 
         to_preserve_item_mask = np.logical_not(removed_item_mask)
 
-        ICM_all = ICM_all[to_preserve_item_mask, :]
-        # URM is already clean
+        ICM_books = ICM_books[to_preserve_item_mask, :]
+        # ICM_users = ICM_users[to_preserve_item_mask, :]
+
+        self.n_items = ICM_books.shape[0]
+
+        # ICM_all, tokenToFeatureMapper_ICM_all = merge_ICM(
+        #     ICM_users,
+        #     ICM_books,
+        #     tokenToFeatureMapper_ICM_users,
+        #     tokenToFeatureMapper_ICM_books,
+        # )
+
+        ICM_all = ICM_books
+        tokenToFeatureMapper_ICM_all = tokenToFeatureMapper_ICM_books
 
         self.n_items = ICM_all.shape[0]
 
         loaded_URM_dict = {"URM_all": URM_all, "URM_timestamp": URM_timestamp}
 
-        loaded_ICM_dict = {"ICM_all": ICM_all}
+        loaded_ICM_dict = {"ICM_all": ICM_all, "ICM_books": ICM_books}
 
-        self.loaded_ICM_mapper_dict = {"ICM_all": tokenToFeatureMapper_ICM_all}
+        self.loaded_ICM_mapper_dict = {
+            "ICM_all": tokenToFeatureMapper_ICM_all,
+            "ICM_books": tokenToFeatureMapper_ICM_books,
+        }
 
         additional_data_mapper = {
             "item_original_ID_to_title": self.item_original_ID_to_title,
@@ -245,3 +275,41 @@ class TheBooksDatasetReader(DataReader):
             ICM_builder.get_column_token_to_id_mapper(),
             ICM_builder.get_row_token_to_id_mapper(),
         )
+
+
+    # def _loadICM_users(self, books_path, header=True, if_new_item="add"):
+
+    #     ICM_builder = IncrementalSparseMatrix_FilterIDs(
+    #         preinitialized_col_mapper=None,
+    #         on_new_col="add",
+    #         preinitialized_row_mapper=None,
+    #         on_new_row=if_new_item,
+    #     )
+
+    #     books_file = open(books_path, "r", encoding="utf8")
+
+    #     if header:
+    #         books_file.readline()
+
+    #     parser_books = csv.reader(books_file, delimiter=",", quotechar='"')
+
+    #     for book_data in parser_books:
+    #         book_id = book_data[0]
+    #         location = book_data[1]
+    #         age = book_data[2]
+
+    #         # self.item_original_ID_to_title[book_id] = title
+
+    #         token_list = [
+    #             "location_" + location,
+    #             "age_" + age,
+    #         ]
+
+    #         ICM_builder.add_single_row(book_id, token_list, data=True)
+
+    #     return (
+    #         ICM_builder.get_SparseMatrix(),
+    #         ICM_builder.get_column_token_to_id_mapper(),
+    #         ICM_builder.get_row_token_to_id_mapper(),
+    #     )
+

@@ -162,10 +162,10 @@ class TheBooksDatasetLoader(DataLoader):
     def __init__(self, preprocessing=None, preprocessing_params=None):
         super(TheBooksDatasetLoader, self).__init__(TheBooksDatasetReader, preprocessing, preprocessing_params)
 
-    def get_ICM_from_name(self, ICM_name='ICM_all'):
+    def get_ICM_from_name(self, ICM_name='ICM_books'):
         return super(TheBooksDatasetLoader, self).get_ICM_from_name(ICM_name)
 
-    def get_original_ICM_train_from_name(self, ICM_name='ICM_all'):
+    def get_original_ICM_train_from_name(self, ICM_name='ICM_books'):
         # Filter the ICM removing all the features with less than 5 interactions
         ICM = self.get_ICM_from_name(ICM_name)
         features_with_more_than_5_interactions = np.ediff1d(ICM.tocsc().indptr) >= 5
@@ -182,5 +182,5 @@ class TheBooksDatasetLoader(DataLoader):
 
         return ICM[:, features_with_more_than_5_interactions]
 
-    def get_ICM_train_from_name(self, ICM_name='ICM_all', return_original=False):
+    def get_ICM_train_from_name(self, ICM_name='ICM_books', return_original=False):
         return super(TheBooksDatasetLoader, self).get_ICM_train_from_name(ICM_name, return_original)
