@@ -6,18 +6,15 @@ from neal import SimulatedAnnealingSampler
 
 from core.CQFSSampler import (CQFSQBSolvSampler, CQFSQBSolvTabuSampler,
                               CQFSSimulatedAnnealingSampler)
-from data.DataLoader import TheBooksDatasetLoader
+from data.DataLoader import TheBooksV2DatasetLoader
 from experiments.train_CQFS import train_CQFS
 from recsys.Recommender_import_list import (ItemKNNCFRecommender,
                                             PureSVDItemRecommender,
                                             RP3betaRecommender)
 
-# make "custom_results" dir
-if not os.path.exists("../../results_trainer"):
-    os.makedirs("../../results_trainer")
 
 def main():
-    data_loader = TheBooksDatasetLoader()
+    data_loader = TheBooksV2DatasetLoader()
     ICM_name = 'ICM_books'
 
     percentages = [40, 60, 80, 95]
@@ -44,9 +41,6 @@ def main():
 
         train_CQFS(data_loader, ICM_name, percentages, alphas, betas, combination_strengths, solver_class,
                 CF_recommender_classes, cpu_count_div=cpu_count_div, cpu_count_sub=cpu_count_sub)
-
-        # move folder "results/TheBooksDataset" to "custom_results"
-        shutil.move("results/TheBooksDataset", f"../../results_trainer/TheBooksDataset-{name}")
 
 
 if __name__ == '__main__':

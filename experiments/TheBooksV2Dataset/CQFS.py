@@ -4,21 +4,23 @@ import shutil
 from dwave.system import LeapHybridSampler
 from neal import SimulatedAnnealingSampler
 
-from core.CQFSSampler import (CQFSQBSolvSampler, CQFSQBSolvTabuSampler,
-                              CQFSSimulatedAnnealingSampler)
-from data.DataLoader import TheBooksDatasetLoader
+from core.CQFSSampler import (
+    CQFSQBSolvSampler,
+    CQFSQBSolvTabuSampler,
+    CQFSSimulatedAnnealingSampler,
+)
+from data.DataLoader import TheBooksV2DatasetLoader
 from experiments.run_CQFS import run_CQFS
-from recsys.Recommender_import_list import (ItemKNNCFRecommender,
-                                            PureSVDItemRecommender,
-                                            RP3betaRecommender)
+from recsys.Recommender_import_list import (
+    ItemKNNCFRecommender,
+    PureSVDItemRecommender,
+    RP3betaRecommender,
+)
 
-# make "custom_results" dir
-if not os.path.exists("../../results_cqfs"):
-    os.makedirs("../../results_cqfs")
 
 def main():
-    data_loader = TheBooksDatasetLoader()
-    ICM_name = 'ICM_books'
+    data_loader = TheBooksV2DatasetLoader()
+    ICM_name = "ICM_books"
 
     ##################################################
     # CQFS hyperparameters and settings
@@ -63,10 +65,6 @@ def main():
             save_BQMs,
             parameter_product,
         )
-
-
-        shutil.move("results/TheBooksDataset", f"../../results_cqfs/TheBooksDataset-{name}")
-
 
 
 if __name__ == "__main__":

@@ -1,9 +1,9 @@
-from data.DataLoader import TheBooksDatasetLoader
+from data.DataLoader import TheBooksV2DatasetLoader
 from experiments.baseline_TFIDF import baseline_TFIDF
 
 
 def main():
-    data_loader = TheBooksDatasetLoader()
+    data_loader = TheBooksV2DatasetLoader()
     ICM_name = 'ICM_books'
     baseline_TFIDF(data_loader, ICM_name)
 

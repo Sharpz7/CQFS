@@ -29,23 +29,25 @@ import numpy as np
 import pandas as pd
 
 from recsys.Base.Recommender_utils import reshapeSparse
-from recsys.Data_manager.Booklens._utils_booklens_parser import \
-    _loadURM_preinitialized_item_id
+from recsys.Data_manager.Booklens._utils_booklens_parser import (
+    _loadURM_preinitialized_item_id,
+)
 from recsys.Data_manager.DataPostprocessing_K_Cores import select_k_cores
 from recsys.Data_manager.DataReader import DataReader
 from recsys.Data_manager.DataReader_utils import (
-    invert_dictionary, merge_ICM, reconcile_mapper_with_removed_tokens,
-    remove_features)
+    invert_dictionary,
+    merge_ICM,
+    reconcile_mapper_with_removed_tokens,
+    remove_features,
+)
 from recsys.Data_manager.Dataset import Dataset
-from recsys.Data_manager.IncrementalSparseMatrix import \
-    IncrementalSparseMatrix_FilterIDs
+from recsys.Data_manager.IncrementalSparseMatrix import (
+    IncrementalSparseMatrix_FilterIDs,
+)
 
 
 class TheBooksV2DatasetReader(DataReader):
-
-    DATASET_URL = (
-        "https://example.com"
-    )
+    DATASET_URL = "https://example.com"
     DATASET_SUBFOLDER = "TheBooksV2Dataset/"
     AVAILABLE_URM = ["URM_all", "URM_timestamp"]
     AVAILABLE_ICM = ["ICM_all", "ICM_books"]
@@ -74,7 +76,6 @@ class TheBooksV2DatasetReader(DataReader):
         zipFile_name = "the-booksv2-dataset.zip"
 
         try:
-
             dataFile = zipfile.ZipFile(
                 compressed_zip_file_folder + zipFile_name
             )
@@ -88,14 +89,12 @@ class TheBooksV2DatasetReader(DataReader):
                 path=decompressed_zip_file_folder + "decompressed/",
             )
 
-
             URM_PATH = dataFile.extract(
-                "Ratings.csv",
+                "RatingsV2.csv",
                 path=decompressed_zip_file_folder + "decompressed/",
             )
 
         except (FileNotFoundError, zipfile.BadZipFile):
-
             self._print("Unable to find or extract data zip file.")
             self._print(
                 "Automatic download not available, please ensure the ZIP data file is in folder {}.".format(
@@ -173,7 +172,6 @@ class TheBooksV2DatasetReader(DataReader):
         item_original_ID_to_title_old = self.item_original_ID_to_title.copy()
 
         for item_id in item_original_ID_to_title_old:
-
             if item_id not in self.item_original_ID_to_index:
                 del self.item_original_ID_to_title[item_id]
 
@@ -237,7 +235,6 @@ class TheBooksV2DatasetReader(DataReader):
         return loaded_dataset
 
     def _loadICM_books(self, books_path, header=True, if_new_item="add"):
-
         ICM_builder = IncrementalSparseMatrix_FilterIDs(
             preinitialized_col_mapper=None,
             on_new_col="add",
@@ -257,13 +254,13 @@ class TheBooksV2DatasetReader(DataReader):
             title = book_data[1]
             author = book_data[2]
             year = book_data[3]
-            publisher = book_data[4]
-            user_engagement_score = book_data[5]
-            book_popularity_index = book_data[6]
+            # publisher = book_data[4]
+            # user_engagement_score = book_data[5]
+            # book_popularity_index = book_data[6]
             author_diversity_metric = book_data[7]
-            publication_trend_indicator = book_data[8]
-            genre_preference_score = book_data[9]
-            user_loyalty_measure = book_data[10]
+            # publication_trend_indicator = book_data[8]
+            # genre_preference_score = book_data[9]
+            # user_loyalty_measure = book_data[10]
 
             self.item_original_ID_to_title[book_id] = title
 
@@ -271,13 +268,13 @@ class TheBooksV2DatasetReader(DataReader):
                 "title_" + title,
                 "author_" + author,
                 "year_" + year,
-                "publisher_" + publisher,
-                "user_engagement_score_" + user_engagement_score,
-                "book_popularity_index_" + book_popularity_index,
+                # "publisher_" + publisher,
+                # "user_engagement_score_" + user_engagement_score,
+                # "book_popularity_index_" + book_popularity_index,
                 "author_diversity_metric_" + author_diversity_metric,
-                "publication_trend_indicator_" + publication_trend_indicator,
-                "genre_preference_score_" + genre_preference_score,
-                "user_loyalty_measure_" + user_loyalty_measure,
+                # "publication_trend_indicator_" + publication_trend_indicator,
+                # "genre_preference_score_" + genre_preference_score,
+                # "user_loyalty_measure_" + user_loyalty_measure,
             ]
 
             ICM_builder.add_single_row(book_id, token_list, data=True)
@@ -287,7 +284,6 @@ class TheBooksV2DatasetReader(DataReader):
             ICM_builder.get_column_token_to_id_mapper(),
             ICM_builder.get_row_token_to_id_mapper(),
         )
-
 
     # def _loadICM_users(self, books_path, header=True, if_new_item="add"):
 
@@ -324,4 +320,3 @@ class TheBooksV2DatasetReader(DataReader):
     #         ICM_builder.get_column_token_to_id_mapper(),
     #         ICM_builder.get_row_token_to_id_mapper(),
     #     )
-
