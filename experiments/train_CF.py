@@ -22,8 +22,8 @@ def train_CF(data_loader: DataLoader, n_cases=50, n_random_starts=15):
     # For speed, just do ItemKNNCFRecommender
     recommender_classes = [
         ItemKNNCFRecommender,
-        # PureSVDItemRecommender,
-        # RP3betaRecommender
+        PureSVDItemRecommender,
+        RP3betaRecommender
     ]
     for Recommender in recommender_classes:
         # Name of the experiment and output results folder path

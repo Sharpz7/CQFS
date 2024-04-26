@@ -40,8 +40,8 @@ def main():
     for name, solver_class in solves_classes:
         CF_recommender_classes = [
             ItemKNNCFRecommender,
-            # PureSVDItemRecommender,
-            # RP3betaRecommender,
+            PureSVDItemRecommender,
+            RP3betaRecommender,
         ]
 
         save_FPMs = False

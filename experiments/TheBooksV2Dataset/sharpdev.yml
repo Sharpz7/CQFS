@@ -1,0 +1,14 @@
+version: 1
+
+envfile: .env
+
+setup: |
+  echo 'Setup command goes here'
+
+scripts:
+  default: echo 'I am the default command'
+  echo: echo $_ARG1 $_ARG2
+  say_secret: echo SECRET
+
+values:
+  SECRET: Secret123

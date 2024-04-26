@@ -51,28 +51,32 @@ def main():
     ##################################################
     # ICM preparation
 
-    # Filter the ICM removing all the features with less than 5 interactions
-    features_with_more_than_5_interactions = (
-        np.ediff1d(unfiltered_ICM_train.tocsc().indptr) >= 5
-    )
-    original_ICM_train = unfiltered_ICM_train[
-        :, features_with_more_than_5_interactions
-    ]
+    features_with_more_than_5_interactions = np.ediff1d(unfiltered_ICM_train.tocsc().indptr) >= 5
+    original_ICM_train = unfiltered_ICM_train[:, features_with_more_than_5_interactions]
+
+    # Get the indices of the features that were kept
+    kept_features_indices = np.where(features_with_more_than_5_interactions)[0]
 
     # Remove cold items interactions from the ICM
     test_items = np.ediff1d(URM_test.tocsc().indptr) != 0
     test_items = np.arange(len(test_items))[test_items]
     ICM_train = remove_ICM_item_interactions(original_ICM_train, test_items)
 
-    # Check if the removal was correct
+    # Ensure that no interactions remain for test items in the training ICM
     no_ICM_interaction_item_mask = np.ediff1d(ICM_train.indptr) == 0
-    assert np.alltrue(
-        no_ICM_interaction_item_mask[test_items]
-    ), "Test items were not correctly removed from the train ICM."
+    assert np.alltrue(no_ICM_interaction_item_mask[test_items]), "Test items were not correctly removed from the train ICM."
 
     n_items, n_features = ICM_train.shape
-
     print(f"Training ICM has {n_items} items and {n_features} features.")
+
+    # Retrieve the feature mapping from the data reader
+    feature_index_mapping = data_reader.loaded_ICM_mapper_dict['ICM_books']
+
+    # Print only the names and indices of the retained features
+    print("Retained feature names and their corresponding indices:")
+    for feature_name, feature_index in feature_index_mapping.items():
+        if feature_index in kept_features_indices:
+            print(f"{feature_name}: {feature_index}")
 
 
 if __name__ == "__main__":

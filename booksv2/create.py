@@ -87,8 +87,9 @@ books_df = add_custom_column(books_df, ColumnType.BINARY, column_names[5])
 
 
 # reduce the number of rows by 1 / 4 in both files
-ratings_df = ratings_df.sample(frac=0.25)
-books_df = books_df.sample(frac=0.25)
+frac = 1/20
+ratings_df = ratings_df.sample(frac=frac)
+books_df = books_df.sample(frac=frac)
 
 # Save the updated ratings dataset
 ratings_df.to_csv("RatingsV2.csv", index=False)

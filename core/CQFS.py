@@ -485,8 +485,6 @@ class CQFS:
         expID = get_experiment_id(
             alpha, beta, p=p, combination_strength=combination_strength
         )
-
-        print(f"Selecting {k} features with {p} percentage.")
         self.__load_selection(expID)
         if self.selections.get(expID) is not None:
             return self.selections[expID].copy()

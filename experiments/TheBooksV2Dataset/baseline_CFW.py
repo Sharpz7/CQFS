@@ -2,9 +2,8 @@ from data.DataLoader import TheBooksV2DatasetLoader
 from experiments.baseline_CFW import baseline_CFW
 from recsys.GraphBased.RP3betaRecommender import RP3betaRecommender
 from recsys.KNN.ItemKNNCFRecommender import ItemKNNCFRecommender
-from recsys.MatrixFactorization.PureSVDRecommender import (
-    PureSVDItemRecommender,
-)
+from recsys.MatrixFactorization.PureSVDRecommender import \
+    PureSVDItemRecommender
 
 
 def main():
@@ -12,8 +11,8 @@ def main():
     ICM_name = "ICM_books"
     CF_recommenders = [
         ItemKNNCFRecommender,
-        # PureSVDItemRecommender,
-        # RP3betaRecommender,
+        PureSVDItemRecommender,
+        RP3betaRecommender,
     ]
     baseline_CFW(data_loader, ICM_name, CF_recommenders)
 
