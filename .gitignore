@@ -131,3 +131,4 @@ ENV/
 results_CF
 results_cqfs
 results_trainer
+.aider*

@@ -4,18 +4,13 @@ import shutil
 from dwave.system import LeapHybridSampler
 from neal import SimulatedAnnealingSampler
 
-from core.CQFSSampler import (
-    CQFSQBSolvSampler,
-    CQFSQBSolvTabuSampler,
-    CQFSSimulatedAnnealingSampler,
-)
+from core.CQFSSampler import (CQFSQBSolvSampler, CQFSQBSolvTabuSampler,
+                              CQFSSimulatedAnnealingSampler)
 from data.DataLoader import TheBooksV2DatasetLoader
 from experiments.run_CQFS import run_CQFS
-from recsys.Recommender_import_list import (
-    ItemKNNCFRecommender,
-    PureSVDItemRecommender,
-    RP3betaRecommender,
-)
+from recsys.Recommender_import_list import (ItemKNNCFRecommender,
+                                            PureSVDItemRecommender,
+                                            RP3betaRecommender)
 
 
 def main():

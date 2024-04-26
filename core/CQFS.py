@@ -6,13 +6,9 @@ import numpy as np
 from dwave.system import DWaveSampler, EmbeddingComposite, LeapHybridSampler
 from neal import SimulatedAnnealingSampler
 
-from core.CQFSSampler import (
-    CQFSEmbedding,
-    CQFSQBSolvSampler,
-    CQFSQBSolvTabuSampler,
-    CQFSSampler,
-    CQFSSimulatedAnnealingSampler,
-)
+from core.CQFSSampler import (CQFSEmbedding, CQFSQBSolvSampler,
+                              CQFSQBSolvTabuSampler, CQFSSampler,
+                              CQFSSimulatedAnnealingSampler)
 from recsys.Base.DataIO import DataIO
 from utils.naming import get_experiment_id
 from utils.samplers import get_hybrid_from_topology
@@ -433,6 +429,7 @@ class CQFS:
             "selection": selection,
             "response": response.to_serializable(),
         }
+
         selection_dataIO.save_data(self.selection_type, selection_dict)
         self.__print(f"[{expID}] Selection and response saved.")
 
@@ -488,6 +485,8 @@ class CQFS:
         expID = get_experiment_id(
             alpha, beta, p=p, combination_strength=combination_strength
         )
+
+        print(f"Selecting {k} features with {p} percentage.")
         self.__load_selection(expID)
         if self.selections.get(expID) is not None:
             return self.selections[expID].copy()
