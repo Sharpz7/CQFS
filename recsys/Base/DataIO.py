@@ -6,12 +6,16 @@ Created on 27/04/2019
 @author: Maurizio Ferrari Dacrema
 """
 
-import os, json, zipfile, shutil, platform
+import json
+import os
+import platform
+import shutil
+import zipfile
 
+import numpy as np
+import pandas as pd
 import scipy.sparse as sps
 from pandas import DataFrame
-import pandas as pd
-import numpy as np
 
 
 def json_not_serializable_handler(o):

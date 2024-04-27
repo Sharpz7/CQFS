@@ -1,0 +1,125 @@
+version: 1
+
+scripts:
+  python37: |
+    sudo add-apt-repository ppa:deadsnakes/ppa
+    sudo apt-get update
+    sudo apt install python3.7 python3.7-distutils python3.7-venv -y
+    sudo apt install gcc python3.7-dev -y
+
+  setup: |
+    python3.7 -m venv .venv
+    source .venv/bin/activate
+    pip install -r requirements.txt
+
+  compile: |
+    export PYTHONPATH=$PYTHONPATH:$(pwd)
+    cd recsys
+    source .venv/bin/activate
+    python run_compile_all_cython.py
+
+    # Run `dwave setup` to setup
+
+  split_movie: |
+    . .venv/bin/activate
+    mkdir ./recsys/Data_manager_offline_datasets/TheMoviesDataset
+    export PYTHONPATH=$PYTHONPATH:$(pwd)
+    mv ./the-movies-dataset.zip ./recsys/Data_manager_offline_datasets/TheMoviesDataset
+
+    python ./data/split_TheMoviesDataset.py
+
+  split_books: |
+    . .venv/bin/activate
+    mkdir ./recsys/Data_manager_offline_datasets/TheBooksDataset
+    export PYTHONPATH=$PYTHONPATH:$(pwd)
+    mv ./the-books-dataset.zip ./recsys/Data_manager_offline_datasets/TheBooksDataset
+
+    python ./data/split_TheBooksDataset.py
+
+  run: |
+    export PYTHONPATH=$PYTHONPATH:$(pwd)
+    . .venv/bin/activate
+
+    cd experiments/TheMoviesDataset
+    python CollaborativeFiltering.py
+    python CQFS.py
+    python CQFSTrainer.py
+
+  run_books: |
+    export PYTHONPATH=$PYTHONPATH:$(pwd)
+    . .venv/bin/activate
+
+    cd experiments/TheBooksDataset
+    python CollaborativeFiltering.py
+    python CQFS.py
+    python CQFSTrainer.py
+
+  baselines: |
+    export PYTHONPATH=$PYTHONPATH:$(pwd)
+    . .venv/bin/activate
+
+    cd experiments/TheMoviesDataset
+
+    # ItemKNN content-based with all the features
+    python baseline_CBF.py
+
+    # ItemKNN content-based with features selected through TF-IDF
+    python baseline_TFIDF.py
+
+    # CFeCBF feature weighting baseline
+    python baseline_CFW.py
+
+  baselines_books: |
+    export PYTHONPATH=$PYTHONPATH:$(pwd)
+    . .venv/bin/activate
+
+    cd experiments/TheBooksDataset
+
+    # ItemKNN content-based with all the features
+    python baseline_CBF.py
+
+    # ItemKNN content-based with features selected through TF-IDF
+    python baseline_TFIDF.py
+
+    # CFeCBF feature weighting baseline
+    python baseline_CFW.py
+
+
+  create_v2: |
+    export PYTHONPATH=$PYTHONPATH:$(pwd)
+    . .venv/bin/activate
+
+    cd booksv2
+    python create.py
+
+  split_v2: |
+    . .venv/bin/activate
+    mkdir ./recsys/Data_manager_offline_datasets/TheBooksV2Dataset
+    export PYTHONPATH=$PYTHONPATH:$(pwd)
+    mv ./booksv2/the-booksv2-dataset.zip ./recsys/Data_manager_offline_datasets/TheBooksV2Dataset
+
+    python ./data/split_TheBooksV2Dataset.py
+
+  run_v2: |
+    export PYTHONPATH=$PYTHONPATH:$(pwd)
+    . .venv/bin/activate
+
+    cd experiments/TheBooksV2Dataset
+    python CollaborativeFiltering.py
+    python CQFS.py
+    python CQFSTrainer.py
+
+  baselines_v2: |
+    export PYTHONPATH=$PYTHONPATH:$(pwd)
+    . .venv/bin/activate
+
+    cd experiments/TheBooksV2Dataset
+
+    # ItemKNN content-based with all the features
+    python baseline_CBF.py
+
+    # ItemKNN content-based with features selected through TF-IDF
+    python baseline_TFIDF.py
+
+    # CFeCBF feature weighting baseline
+    python baseline_CFW.py

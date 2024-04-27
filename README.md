@@ -1,3 +1,11 @@
+# Paper
+
+https://arxiv.org/pdf/2110.05089.pdf
+
+# D-Wave Admin Page
+
+https://cloud.dwavesys.com/leap/
+
 # Collaborative-driven Quantum Feature Selection
 
 This repository was developed by Riccardo Nembrini, PhD student at Politecnico di Milano.
@@ -30,7 +38,7 @@ conda create -n cqfs python=3.7 anaconda
 conda activate cqfs
 ```
 
->Remember to add this project in the PYTHONPATH environmental variable if you plan to run the experiments 
+>Remember to add this project in the PYTHONPATH environmental variable if you plan to run the experiments
 on the terminal:
 >```bash
 >export PYTHONPATH=$PYTHONPATH:/path/to/project/folder
@@ -48,7 +56,7 @@ In order to compile you must first have installed: `gcc` and `python3 dev`. Unde
 following commands:
 
 ```bash
-sudo apt install gcc 
+sudo apt install gcc
 sudo apt-get install python3-dev
 ```
 
@@ -164,7 +172,7 @@ saved in the corresponding subdirectories under the `results` directory.
 > collaborative model and perform all the experiments on it.
 >
 > This is not the case when running experiments with Simulated Annealing, since it is executed locally.
-> 
+>
 > For Xing Challenge 2017 experiments run directly on the D-Wave QPU.
 > Leaving all the hyperparameters unchanged, all the experiments should not exceed the free time of the developer plan.
 > Pay attention when increasing the number of reads from the sampler or the annealing time.

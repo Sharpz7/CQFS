@@ -1,8 +1,12 @@
 import numpy as np
 
-from recsys.Data_manager import TheMoviesDatasetReader, XingChallenge2017Reader
+from recsys.Data_manager import (TheBooksDatasetReader,
+                                 TheBooksV2DatasetReader,
+                                 TheMoviesDatasetReader,
+                                 XingChallenge2017Reader)
 from recsys.Data_manager.CiteULike.CiteULikeReader import CiteULike_aReader
-from recsys.Data_manager.DataPostprocessing_K_Cores import DataPostprocessing_K_Cores
+from recsys.Data_manager.DataPostprocessing_K_Cores import \
+    DataPostprocessing_K_Cores
 from recsys.Data_manager.DataSplitter_Cold_items import DataSplitter_Cold_items
 from utils.recsys import remove_ICM_item_interactions
 
@@ -154,3 +158,60 @@ class XingChallenge2017Loader(DataLoader):
 
     def get_ICM_train_from_name(self, ICM_name='ICM_all', return_original=False):
         return super(XingChallenge2017Loader, self).get_ICM_train_from_name(ICM_name, return_original)
+
+class TheBooksDatasetLoader(DataLoader):
+
+    def __init__(self, preprocessing=None, preprocessing_params=None):
+        super(TheBooksDatasetLoader, self).__init__(TheBooksDatasetReader, preprocessing, preprocessing_params)
+
+    def get_ICM_from_name(self, ICM_name='ICM_books'):
+        return super(TheBooksDatasetLoader, self).get_ICM_from_name(ICM_name)
+
+    def get_original_ICM_train_from_name(self, ICM_name='ICM_books'):
+        # Filter the ICM removing all the features with less than 5 interactions
+        ICM = self.get_ICM_from_name(ICM_name)
+        features_with_more_than_5_interactions = np.ediff1d(ICM.tocsc().indptr) >= 5
+
+        original_features = np.array(list(self.data_splitter.SPLIT_ICM_MAPPER_DICT[ICM_name].keys()))
+        filtered_features = original_features[features_with_more_than_5_interactions]
+        filtered_features_index = np.arange(len(features_with_more_than_5_interactions))[
+            features_with_more_than_5_interactions]
+
+        # self.feature_mappers[ICM_name] = {filtered_features[i]: filtered_features_index[i] for i in
+        #                                   range(len(filtered_features))}
+
+        self.feature_mappers[ICM_name] = {filtered_features[i]: i for i in range(len(filtered_features))}
+
+        return ICM[:, features_with_more_than_5_interactions]
+
+    def get_ICM_train_from_name(self, ICM_name='ICM_books', return_original=False):
+        return super(TheBooksDatasetLoader, self).get_ICM_train_from_name(ICM_name, return_original)
+
+
+class TheBooksV2DatasetLoader(DataLoader):
+
+    def __init__(self, preprocessing=None, preprocessing_params=None):
+        super(TheBooksV2DatasetLoader, self).__init__(TheBooksV2DatasetReader, preprocessing, preprocessing_params)
+
+    def get_ICM_from_name(self, ICM_name='ICM_books'):
+        return super(TheBooksV2DatasetLoader, self).get_ICM_from_name(ICM_name)
+
+    def get_original_ICM_train_from_name(self, ICM_name='ICM_books'):
+        # Filter the ICM removing all the features with less than 5 interactions
+        ICM = self.get_ICM_from_name(ICM_name)
+        features_with_more_than_5_interactions = np.ediff1d(ICM.tocsc().indptr) >= 5
+
+        original_features = np.array(list(self.data_splitter.SPLIT_ICM_MAPPER_DICT[ICM_name].keys()))
+        filtered_features = original_features[features_with_more_than_5_interactions]
+        filtered_features_index = np.arange(len(features_with_more_than_5_interactions))[
+            features_with_more_than_5_interactions]
+
+        # self.feature_mappers[ICM_name] = {filtered_features[i]: filtered_features_index[i] for i in
+        #                                   range(len(filtered_features))}
+
+        self.feature_mappers[ICM_name] = {filtered_features[i]: i for i in range(len(filtered_features))}
+
+        return ICM[:, features_with_more_than_5_interactions]
+
+    def get_ICM_train_from_name(self, ICM_name='ICM_books', return_original=False):
+        return super(TheBooksV2DatasetLoader, self).get_ICM_train_from_name(ICM_name, return_original)

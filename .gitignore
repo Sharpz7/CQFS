@@ -126,3 +126,9 @@ ENV/
 
 # macOS cache
 **/.DS_Store
+
+
+results_CF
+results_cqfs
+results_trainer
+.aider*

@@ -2,8 +2,10 @@ from data.DataLoader import DataLoader
 from recsys.Base.Evaluation.Evaluator import EvaluatorHoldout
 from recsys.GraphBased.RP3betaRecommender import RP3betaRecommender
 from recsys.KNN.ItemKNNCFRecommender import ItemKNNCFRecommender
-from recsys.MatrixFactorization.PureSVDRecommender import PureSVDItemRecommender
-from recsys.ParameterTuning.run_parameter_search import runParameterSearch_Collaborative
+from recsys.MatrixFactorization.PureSVDRecommender import \
+    PureSVDItemRecommender
+from recsys.ParameterTuning.run_parameter_search import \
+    runParameterSearch_Collaborative
 
 
 def train_CF(data_loader: DataLoader, n_cases=50, n_random_starts=15):
@@ -17,7 +19,12 @@ def train_CF(data_loader: DataLoader, n_cases=50, n_random_starts=15):
     # Instantiate the validation evaluator needed by the parameter search algorithm
     evaluator_validation = EvaluatorHoldout(URM_validation, cutoff_list=[10])
 
-    recommender_classes = [ItemKNNCFRecommender, PureSVDItemRecommender, RP3betaRecommender]
+    # For speed, just do ItemKNNCFRecommender
+    recommender_classes = [
+        ItemKNNCFRecommender,
+        PureSVDItemRecommender,
+        RP3betaRecommender
+    ]
     for Recommender in recommender_classes:
         # Name of the experiment and output results folder path
         recommendation_folder = f"{dataset_name}/{Recommender.RECOMMENDER_NAME}"
